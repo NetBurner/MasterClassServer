@@ -1,0 +1,26 @@
+[
+  {
+    "model": "m7site.command",
+    "pk": 1,
+    "fields": {
+      "class_name": "SuccessCommand",
+      "name": "Success"
+    }
+  },
+  {
+    "model": "m7site.command",
+    "pk": 2,
+    "fields": {
+      "class_name": "NotFoundCommand",
+      "name": "Not Found"
+    }
+  },
+  {
+    "model": "m7site.command",
+    "pk": 3,
+    "fields": {
+      "class_name": "ErrorCommand",
+      "name": "Error"
+    }
+  }
+]

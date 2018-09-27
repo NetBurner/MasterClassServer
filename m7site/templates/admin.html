@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static sekizai_tags %}
+
+{% block main-content %}
+<div ng-if="activeStudent != null">
+    <div class="row">
+        <div class="col-md-12">
+            <md-input-container>
+                <label>Name</label>
+                <input ng-model='activeStudent.name' disabled ></input>
+            </md-input-contianer>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <md-input-container>
+                <label>Message</label>
+                <input ng-model="activeStudent.message" ng-blur="onMessageChange(activeStudent)" nb-enter="onMessageChange(activeStudent)"></input>
+            </md-input-container>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <md-input-container>
+                <label>Last Message Received</label>
+                <input ng-model="activeStudent.lastMessage" disabled />
+            </md-input-container>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div ng-repeat="i in activeStudent.switches track by $index" style="display: inline-block;">
+                <img ng-src="{% static '/images/' %}{% verbatim %}{{activeStudent.switches[$index] ? 'On.png' : 'Off.png'}}{% endverbatim %}" />
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-repeat="command in commands">
+        <div class="col-md-12">
+            <md-switch ng-model="activeStudent.command" ng-true-value="{% verbatim %}{{command.id}}{% endverbatim %}" aria-label="{% verbatim %} {{ activateStudent.name }} {% endverbatim %}" class="md-warn" ng-change="onCommandChange(activeStudent, command)">
+                {% verbatim %} {{ command.name }} {% endverbatim %}
+            </md-switch>
+        </div>
+    </div>
+    <!--<div class="row" id='history_chart'>
+    </div>-->
+    
+</div>
+{% endblock %}

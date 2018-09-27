@@ -1,0 +1,85 @@
+{% load static sekizai_tags %}
+<!doctype html>
+<html lang="en" ng-app="m7site">
+    <head>
+        <title>NetBurner Tutorial Admin Site</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {% render_block 'css' %}
+        <script type="text/javascript">
+            var students = [
+                {% for client in clients %}
+                    {% if not forloop.first %}, {% endif %}
+                    {
+                        'id': '{{ client.uuid }}',
+                        'name': '{{ client.student_name }}',
+                        'message': '{{ client.response_message }}',
+                        'command': {{ client.current_command.id }}
+                    }
+                {% endfor %}
+            ];
+
+            var commands = [
+                {% for command in commands %}
+                    {% if not forloop.first %}, {% endif %}
+                    {
+                        'id': {{ command.id }},
+                        'name': '{{ command.name }}'
+                    }
+                {% endfor %}
+            ];
+        </script>
+    </head>
+    
+    {% addtoblock 'css' %}<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">{% endaddtoblock %}
+    {% addtoblock 'css' %}<link href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.9/angular-material.min.css" rel="stylesheet" />{% endaddtoblock %}
+    {% addtoblock 'css' %}<link href="{% static 'css/m7site.css' %}" rel="stylesheet" /><{% endaddtoblock %}
+    {% addtoblock 'js' %}<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.min.js"></script>{% endaddtoblock %}
+    {% addtoblock 'js' %}<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular-animate.min.js" ></script>{% endaddtoblock %}
+    {% addtoblock 'js' %}<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular-aria.min.js" type="text/javascript" ></script>{% endaddtoblock %}
+    {% addtoblock 'js' %}<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.9/angular-material.min.js" type="text/javascript" ></script>{% endaddtoblock %}
+    {% addtoblock 'js' %}<script src="{% static 'js/m7site.js' %}" type="text/javascript" ></script>{% endaddtoblock %}
+    {% addtoblock 'js' %}<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>{% endaddtoblock %}
+    {% addtoblock 'js' %}<script type="text/javascript">
+        google.charts.load('current', {'packages': ['timeline']});
+    </script>{% endaddtoblock %}
+
+
+    <body ng-controller='AdminCtrl'>
+        <header class="navbar navbar-dark sticky-top bg-dark p-0">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h1 class="navbar-brand">M7 Class Site</h1>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="container-fluid" style="height: 100%;">
+            <div class="row" style="height: 100%;">
+                <nav ng-class="{'col-2': activeStudent != null, 'col-12': activeStudent == null, true, 'd-xs-block': activeStudent == null, 'd-md-block': true, 'bg-light': true, 'sidebar': true, 'sidebar-sticky': true}" role="navigation" style="padding-top: 15px;">
+                    <ul class="nav flex-column nav-pills">
+                        <li ng-class="{ 'nav-item': true, 'nav-link': true, 'active': student == activeStudent }" ng-repeat="student in students" ng-click="onStudentClick(student, $index)">
+                            <div style="display: inline-block">
+                                <div>{% verbatim %} {{ student.id }} {% endverbatim %}</div>
+                                <div class="text-muted">{% verbatim %} {{ student.name }} {% endverbatim %}</div>
+                            </div>
+                            <div ng-if="activeStudent == null" style="display: inline-block">
+                                <div ng-repeat="i in student['switches'] track by $index" style="display: inline-block;">
+                                    <img ng-src="{% static '/images/' %}{% verbatim %}{{student.switches[$index] ? 'On.png' : 'Off.png'}}{% endverbatim %}" height="40px" />
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+                <main class="col-10" ng-if="activeStudent != null" style="padding-top: 30px;">
+                {% block main-content %}{% endblock %}
+                </main>
+                <!--
+                <div class="col-md-2 d-none d-md-block bg-light sidebar sidebar-sticky" style="padding-top: 15px">
+                	<button class="btn" ng-click="onClickReset(event)">RESET</button>
+                </div>-->
+            </div>
+        </div>
+        {% render_block 'js' %}
+    </body>
+</html>
